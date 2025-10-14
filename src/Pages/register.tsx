@@ -3,11 +3,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { MdMailOutline, MdLockOutline } from "react-icons/md";
-interface UserData {
-    email: string;
-    password: string;
-}
+import { FaRegUser, FaEyeSlash } from "react-icons/fa";
+import { IoEyeSharp } from "react-icons/io5";
+import type { UserData } from "../Todos/types";
+import { useState } from "react";
 const schema = z.object({
+    userName: z.string().min(1, "UserName is required"),
     email: z.string().min(1, "Email is required").email("Email is invalid"),
     password:
         z.string()
@@ -22,7 +23,8 @@ const schema = z.object({
     path: ["confirmPassword"],
 })
 
-type FormFields = z.infer<typeof schema>; // { email: string, password: string
+type FormFields = z.infer<typeof schema>;
+
 
 const Register = () => {
     const navigate = useNavigate();
@@ -35,6 +37,8 @@ const Register = () => {
         resolver: zodResolver(schema),
     });
 
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const newDate = Date.now();
@@ -49,6 +53,7 @@ const Register = () => {
         else {
             const newUser = {
                 id: newDate,
+                userName: data.userName,
                 email: data.email,
                 password: data.password,
             }
@@ -59,12 +64,29 @@ const Register = () => {
 
     }
 
+    const handleShowPassword = () => {
+        setShowPassword((prev) => !prev);
+    }
+    const handleShowConfirmPassword = () => {
+        setShowConfirmPassword((prev) => !prev);
+    }
     return (
         <div className="flex items-center justify-center bg-[rgba(255,255,255,0.7)] rounded-md w-lg flex-col">
             <div className="mt-4 p-4 text-3xl">
                 <p>Sign Up</p>
             </div>
             <form action="" className="flex flex-col w-full h-full p-6 gap-5" onSubmit={handleSubmit(onSubmit)}>
+                <label htmlFor="userName" className="flex flex-col gap-2 relative">UserName
+                    <FaRegUser className="absolute top-9 left-3.5" />
+                    <input
+                        {...register("userName")}
+                        id="userName"
+                        type="text"
+                        placeholder="Input your user name"
+                        className="border-black border rounded-full p-2 pl-9"
+                    />
+                    {errors.userName && <div className="text-red-500">{errors.userName.message}</div>}
+                </label>
                 <label htmlFor="email" className="flex flex-col gap-2 relative">Email
                     <MdMailOutline className="absolute top-9 left-3.5" />
                     <input
@@ -81,10 +103,21 @@ const Register = () => {
                     <input
                         {...register("password")}
                         id='password'
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="Input your password"
                         className="border-black border rounded-full p-2 pl-9"
                     />
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleShowPassword()
+                        }}
+                        className="absolute top-9 right-4"
+                    >
+                        {showPassword ? <FaEyeSlash /> : <IoEyeSharp />}
+
+                    </button>
                     {errors.password && <div className="text-red-500">{errors.password.message}</div>}
                 </label>
                 <label htmlFor="password" className="flex flex-col gap-2 relative">Confirm Password
@@ -92,13 +125,23 @@ const Register = () => {
                     <input
                         {...register("confirmPassword")}
                         id='confirmPassword'
-                        type="password"
+                        type={showConfirmPassword ? "text" : "password"}
                         placeholder="Input your password again"
                         className="border-black border rounded-full p-2 pl-9"
                     />
+                    <button
+                        type="button"
+                        onClick={() => {
+                            handleShowConfirmPassword()
+                        }}
+                        className="absolute top-9 right-4"
+                    >
+                        {showConfirmPassword ? <FaEyeSlash /> : <IoEyeSharp />}
+
+                    </button>
                     {errors.confirmPassword && <div className="text-red-500">{errors.confirmPassword.message}</div>}
                 </label>
-                <button disabled={isSubmitting} className="border rounded-full mt-4 p-2 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200">
+                <button type="submit" disabled={isSubmitting} className="border rounded-full mt-4 p-2 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200">
                     {isSubmitting ? "Loading..." : "Sign Up"}
                 </button>
             </form>

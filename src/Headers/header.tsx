@@ -1,6 +1,10 @@
 import { LuClipboardList } from "react-icons/lu";
 import { Link } from "react-router";
+import UseAuthStore from "../stores/useAuthStore";
 const Header = () => {
+    const { user, logout } = UseAuthStore();
+    const userLogin = JSON.parse(localStorage.getItem("userEmail") || "[]");
+    console.log(userLogin);
 
     return (
         <div className="">
@@ -17,8 +21,18 @@ const Header = () => {
 
                 </div>
                 <div className="ml-auto mr-4 px-8 py-4">
-                    <Link to="/login" className="ml-4 border rounded-4xl py-1 px-4  hover:text-blue-400">Login</Link>
-                    <Link to="/register" className="ml-4 border rounded-4xl py-1 px-4  hover:text-blue-400">Sign Up</Link>
+                    {user ? (
+                        <div>
+                            <p>Hello {userLogin[0].userName}</p>
+                            <button onClick={logout} className="ml-4 border rounded-4xl py-1 px-4  hover:text-blue-400">Logout</button>
+                        </div>
+                    ) : (
+                        <div>
+                            <Link to="/login" className="ml-4 border rounded-4xl py-1 px-4  hover:text-blue-400">Login</Link>
+                            <Link to="/register" className="ml-4 border rounded-4xl py-1 px-4  hover:text-blue-400">Sign Up</Link>
+                        </div>
+                    )}
+
                 </div>
             </nav>
         </div>

@@ -3,6 +3,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { MdMailOutline, MdLockOutline } from "react-icons/md";
+import { IoEyeSharp } from "react-icons/io5";
+import { FaEyeSlash } from "react-icons/fa";
+
+import UseAuthStore from "../stores/useAuthStore";
+import { useState } from "react";
+import type { UserData } from "../Todos/types";
 
 const schema = z.object({
     email: z.string().min(1, "Email is required").email("Email is invalid"),
@@ -10,10 +16,7 @@ const schema = z.object({
 })
 
 type FormFields = z.infer<typeof schema>; // { email: string, password: string
-interface UserData {
-    email: string;
-    password: string;
-}
+
 const Login = () => {
     const navigate = useNavigate();
     const {
@@ -25,21 +28,28 @@ const Login = () => {
         resolver: zodResolver(schema),
     });
 
+
+
+    const [showPassword, setShowPassword] = useState(false);
     const onSubmit: SubmitHandler<FormFields> = async (data) => {
         await new Promise((resolve) => setTimeout(resolve, 1000));
         const user = JSON.parse(localStorage.getItem("userEmail") || "[]");
+        const userFound = user.find(
+            (u: UserData) => u.email === data.email && u.password === data.password
+        );
 
-        (user as UserData[]).forEach((element: UserData) => {
-            if (data.email === element.email && data.password === element.password) {
-                navigate("/todo");
-            } else {
-                setError('root', {
-                    message: "Email or password is invalid. Please try again",
-                })
-            }
-        });
+        if (userFound) {
+            UseAuthStore.getState().login(userFound.email);
+            navigate('/todo');
+        } else {
+            setError("root", {
+                message: "Email or password is invalid. Please try again",
+            })
+        }
     }
-
+    const handleShowPassword = () => {
+        setShowPassword((prev) => !prev);
+    }
     return (
         <div className="flex items-center justify-center bg-[rgba(255,255,255,0.7)] rounded-md w-lg flex-col">
             <div className="mt-4 p-4 text-3xl">
@@ -63,10 +73,21 @@ const Login = () => {
                     <input
                         {...register("password")}
                         id='password'
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         placeholder="Input your password"
                         className="border-black border rounded-full p-2 pl-9"
                     />
+                    <button
+                        type="button"
+                        onClick={(e) => {
+                            e.stopPropagation()
+                            handleShowPassword()
+                        }}
+                        className="absolute top-9 right-4"
+                    >
+                        {showPassword ? <FaEyeSlash /> : <IoEyeSharp />}
+
+                    </button>
                     {errors.password && <div className="text-red-500">{errors.password.message}</div>}
                 </label>
                 <button disabled={isSubmitting} className="border rounded-full p-2 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200">
