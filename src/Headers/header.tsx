@@ -4,8 +4,6 @@ import UseAuthStore from "../stores/useAuthStore";
 const Header = () => {
     const { user, logout } = UseAuthStore();
     const userLogin = JSON.parse(localStorage.getItem("userEmail") || "[]");
-    console.log(userLogin);
-
     return (
         <div className="">
             <nav className="p-4 flex h-20 items-center text-lg bg-[#2c2c2c] text-white shadow-2xl " >

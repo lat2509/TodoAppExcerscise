@@ -7,29 +7,28 @@ export type Todo = {
 export interface Column {
     name: string;
 }
-
-export interface TaskProps {
-    columns: Column[];
-    todos: Todo[];
-    todo: string;
-    showInput: string | null;
-    setTodo: React.Dispatch<React.SetStateAction<string>>;
-    handleAddTodo: (col: string) => void;
-    handleHideInput: () => void;
-    handleShowInput: (col: string) => void;
-    handleDeleteTodo: (id: number) => void;
-}
-
 export interface ColumnProps {
     col: Column;
     todos: Todo[];
+    showEdit: number | null,
+    editText: string,
+    setEditText: (val: string) => void,
     handleDeleteTodo: (id: number) => void;
+    handleCancelEdit: () => void,
+    handleShowEdit: (id: number) => void,
+    updateTodoText: (id: number) => void,
 }
 
 export interface DragTodoProps {
     id: number;
     text: string;
+    editText: string,
+    showEdit: number | null,
+    setEditText: (val: string) => void,
     handleDeleteTodo: (id: number) => void;
+    handleCancelEdit: () => void,
+    handleShowEdit: (id: number) => void,
+    updateTodoText: (id: number) => void,
 }
 
 export interface AuthState {
@@ -41,4 +40,22 @@ export interface AuthState {
 export interface UserData {
     email: string;
     password: string;
+}
+
+export interface TodoState {
+    todos: Todo[],
+    todo: string,
+    editText: string,
+    showInput: string | null,
+    showEdit: number | null,
+    setTodo: (val: string) => void,
+    setEditText: (val: string) => void,
+    handleShowInput: (col: string) => void,
+    handleAddTodo: (col: string) => void,
+    handleDeleleTodo: (id: number) => void,
+    handleHideInput: () => void;
+    updateTodoStatus: (id: number, status: string) => void,
+    handleShowEdit: (id: number) => void,
+    handleCancelEdit: () => void,
+    updateTodoText: (id: number) => void,
 }

@@ -1,59 +1,92 @@
+import { useTodoStore } from "../stores/useTodoStore";
+import Column from "./column";
 
-import Column from './column'
-import type { TaskProps } from './types'
-const Task: React.FC<TaskProps> = ({
-    columns,
-    todos,
-    todo,
-    showInput,
-    setTodo,
-    handleAddTodo,
-    handleHideInput,
-    handleShowInput,
-    handleDeleteTodo,
-}) => {
+const columns = [
+    { name: "Todo" },
+    { name: "In Progress" },
+    { name: "In Review" },
+    { name: "Deploy" },
+    { name: "In Testing" },
+    { name: "Verify" },
+    { name: "Done" },
+];
+
+const Task = () => {
+    const {
+        todos,
+        todo,
+        showInput,
+        showEdit,
+        editText,
+        setTodo,
+        setEditText,
+        handleShowInput,
+        handleAddTodo,
+        handleDeleleTodo,
+        handleHideInput,
+        handleCancelEdit,
+        handleShowEdit,
+        updateTodoText
+    } = useTodoStore();
+
     return (
-        <div className='flex flex-row justify-around w-full'>
+        <div className="flex flex-row justify-around w-full">
             {columns.map((col) => (
                 <div
                     key={col.name}
-                    className="border rounded-lg p-2 w-50 h-auto bg-[rgba(255,255,255,0.7)] flex flex-col gap-3">
-                    <p>{col.name}</p>
+                    className="border rounded-lg p-2 w-50 h-auto bg-[rgba(255,255,255,0.7)] flex flex-col gap-3"
+                >
+                    <p className="font-semibold">{col.name}</p>
+
                     <Column
                         col={col}
                         todos={todos}
-                        handleDeleteTodo={handleDeleteTodo}
+                        showEdit={showEdit}
+                        editText={editText}
+                        handleDeleteTodo={handleDeleleTodo}
+                        handleCancelEdit={handleCancelEdit}
+                        handleShowEdit={handleShowEdit}
+                        setEditText={setEditText}
+                        updateTodoText={updateTodoText}
                     />
+
                     {showInput === col.name ? (
                         <div>
                             <input
-                                id="todo"
                                 type="text"
-                                onChange={(e) => { setTodo(e.target.value) }}
+                                value={todo}
+                                onChange={(e) => setTodo(e.target.value)}
                                 autoFocus
-                                className="border-black border rounded-full py-2 w-full px-3 mb-2" />
+                                className="border-black border rounded-full py-2 w-full px-3 mb-2"
+                            />
                             <button
-                                onClick={() => { handleAddTodo(col.name), handleHideInput() }}
-                                className="border rounded-full py-2 px-4 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200 !mt-1 !ml-3">
-                                save
+                                onClick={() => {
+                                    handleAddTodo(col.name);
+                                    handleHideInput();
+                                }}
+                                className="border rounded-full py-2 px-4 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200 !mt-1 !ml-3"
+                            >
+                                Save
                             </button>
                             <button
-                                onClick={() => { handleHideInput() }}
-                                className="border rounded-full py-2 px-4 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200 !ml-2.5 !mt-1">
-                                cancel
+                                onClick={() => handleHideInput()}
+                                className="border rounded-full py-2 px-4 bg-gray-300 text-black hover:bg-gray-400 transition-colors duration-200 !ml-2.5 !mt-1"
+                            >
+                                Cancel
                             </button>
                         </div>
                     ) : (
                         <button
                             onClick={() => handleShowInput(col.name)}
-                            className="border rounded-full p-2 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200">
+                            className="border rounded-full p-2 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200"
+                        >
                             Add New
                         </button>
                     )}
                 </div>
             ))}
         </div>
-    )
-}
+    );
+};
 
-export default Task
+export default Task;
