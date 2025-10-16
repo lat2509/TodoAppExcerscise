@@ -13,20 +13,12 @@ const columns = [
 
 const Task = () => {
     const {
-        todos,
         todo,
         showInput,
-        showEdit,
-        editText,
         setTodo,
-        setEditText,
         handleShowInput,
         handleAddTodo,
-        handleDeleleTodo,
         handleHideInput,
-        handleCancelEdit,
-        handleShowEdit,
-        updateTodoText
     } = useTodoStore();
 
     return (
@@ -40,14 +32,6 @@ const Task = () => {
 
                     <Column
                         col={col}
-                        todos={todos}
-                        showEdit={showEdit}
-                        editText={editText}
-                        handleDeleteTodo={handleDeleleTodo}
-                        handleCancelEdit={handleCancelEdit}
-                        handleShowEdit={handleShowEdit}
-                        setEditText={setEditText}
-                        updateTodoText={updateTodoText}
                     />
 
                     {showInput === col.name ? (

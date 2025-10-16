@@ -2,10 +2,12 @@
 import { useDroppable } from "@dnd-kit/core";
 import type { ColumnProps } from "./types";
 import DraggableTodo from "./dragtodo";
+import { useTodoStore } from "../stores/useTodoStore";
 
-const Column: React.FC<ColumnProps> = ({ col, todos, showEdit, editText, setEditText, handleDeleteTodo, handleCancelEdit, handleShowEdit, updateTodoText }) => {
+const Column: React.FC<ColumnProps> = ({ col }) => {
     const { setNodeRef } = useDroppable({ id: col.name });
 
+    const todos = useTodoStore((state) => state.todos);
     return (
         <div ref={setNodeRef} className="flex flex-col gap-3 min-h-96">
             {todos
@@ -15,15 +17,7 @@ const Column: React.FC<ColumnProps> = ({ col, todos, showEdit, editText, setEdit
                 .map((todo) => (
                     <DraggableTodo
                         key={todo.id}
-                        id={todo.id}
-                        text={todo.text}
-                        showEdit={showEdit}
-                        editText={editText}
-                        handleDeleteTodo={handleDeleteTodo}
-                        handleCancelEdit={handleCancelEdit}
-                        setEditText={setEditText}
-                        updateTodoText={updateTodoText}
-                        handleShowEdit={handleShowEdit}
+                        todo={todo}
                     />
                 ))}
         </div>

@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import type { Todo, TodoState } from "../Todos/types";
 
-
 export const useTodoStore = create<TodoState>((set, get) => ({
     todos: JSON.parse(localStorage.getItem("todos") ?? "[]"),
     todo: "",
@@ -30,7 +29,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
         set({ todos: updated, todo: "" });
     },
 
-    handleDeleleTodo: (id) => {
+    handleDeleteTodo: (id) => {
         const filtered = get().todos.filter((t) => t.id !== id);
         localStorage.setItem("todos", JSON.stringify(filtered));
         set({ todos: filtered });

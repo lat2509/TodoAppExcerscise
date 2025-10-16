@@ -3,18 +3,20 @@ import Task from "./task";
 import { useTodoStore } from "../stores/useTodoStore";
 
 const TodoPages = () => {
-    const updateTodoStatus = useTodoStore((s) => s.updateTodoStatus);
+    const updateTodoStatus = useTodoStore((state) => state.updateTodoStatus);
     const handleDragEnd = (e: DragEndEvent) => {
         const { active, over } = e;
         if (!over) return;
         updateTodoStatus(Number(active.id), over.id as string)
     }
     return (
-        <DndContext onDragEnd={handleDragEnd}>
-            <div className="flex flex-row justify-around w-full">
+
+        <div className="flex flex-row justify-around w-full overflow-hidden max-h-screen">
+            <DndContext onDragEnd={handleDragEnd}>
                 <Task />
-            </div>
-        </DndContext>
+            </DndContext>
+        </div>
+
     )
 }
 

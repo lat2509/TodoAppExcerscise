@@ -2,19 +2,20 @@ import { TiDeleteOutline } from "react-icons/ti";
 import { FiEdit } from "react-icons/fi";
 import { useDraggable } from "@dnd-kit/core";
 import type { DragTodoProps } from "./types";
-const DraggableTodo: React.FC<DragTodoProps> = ({
-    id,
-    text,
-    showEdit,
-    editText,
-    setEditText,
-    handleDeleteTodo,
-    handleShowEdit,
-    handleCancelEdit,
-    updateTodoText,
-}) => {
+import { useTodoStore } from "../stores/useTodoStore";
+const DraggableTodo: React.FC<DragTodoProps> = ({ todo }) => {
     const { attributes, listeners, setNodeRef, transform } =
-        useDraggable({ id: id.toString() });
+        useDraggable({ id: todo.id.toString() });
+
+    const {
+        showEdit,
+        editText,
+        setEditText,
+        handleDeleteTodo,
+        handleShowEdit,
+        handleCancelEdit,
+        updateTodoText,
+    } = useTodoStore();
 
     const style = {
         transform: transform
@@ -25,9 +26,9 @@ const DraggableTodo: React.FC<DragTodoProps> = ({
     return (
         <ul ref={setNodeRef} {...attributes} {...listeners} style={style}>
             <li className="border rounded-lg p-2 flex justify-between items-center hover:cursor-grab hover:border-cyan-400 bg-white shadow-sm">
-                <span className="overflow-hidden">{text}</span>
+                <span className="overflow-hidden">{todo.text}</span>
                 <div className="flex gap-1">
-                    {showEdit === id ? (
+                    {showEdit === todo.id ? (
                         <div className="flex flex-col p-2 w-[150px]">
                             <input
                                 id="todo"
@@ -39,7 +40,7 @@ const DraggableTodo: React.FC<DragTodoProps> = ({
                             <button
                                 onPointerDown={(e) => { e.stopPropagation() }}
 
-                                onClick={() => { handleCancelEdit(), updateTodoText(id) }}
+                                onClick={() => { handleCancelEdit(), updateTodoText(todo.id) }}
                                 className="border rounded-full py-2 px-4 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200 !mt-1 !ml-3">
                                 save
                             </button>
@@ -55,7 +56,7 @@ const DraggableTodo: React.FC<DragTodoProps> = ({
                     ) : (
                         <button
                             onPointerDown={(e) => { e.stopPropagation() }}
-                            onClick={() => { handleShowEdit(id) }}
+                            onClick={() => { handleShowEdit(todo.id) }}
                             className="hover:text-blue-400"
                         >
                             <FiEdit />
@@ -64,7 +65,7 @@ const DraggableTodo: React.FC<DragTodoProps> = ({
 
                     <button
                         onPointerDownCapture={(e) => { e.stopPropagation() }}
-                        onClick={() => handleDeleteTodo(id)}
+                        onClick={() => handleDeleteTodo(todo.id)}
                         className="hover:text-red-600"
                     >
                         <TiDeleteOutline className="text-2xl" />
