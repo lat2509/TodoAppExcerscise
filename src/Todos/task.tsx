@@ -26,7 +26,7 @@ const Task = () => {
             {columns.map((col) => (
                 <div
                     key={col.name}
-                    className="border rounded-lg p-2 w-50 h-auto bg-[rgba(255,255,255,0.7)] flex flex-col gap-3"
+                    className="border rounded-lg p-2 w-60 h-auto bg-[rgba(255,255,255,0.7)] flex flex-col gap-3"
                 >
                     <p className="font-semibold">{col.name}</p>
 
@@ -48,7 +48,7 @@ const Task = () => {
                                     handleAddTodo(col.name);
                                     handleHideInput();
                                 }}
-                                className="border rounded-full py-2 px-4 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200 !mt-1 !ml-3"
+                                className="border rounded-full py-2 px-4 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200 !mt-1 !ml-5"
                             >
                                 Save
                             </button>
