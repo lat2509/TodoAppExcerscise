@@ -1,31 +1,60 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router";
-import "./index.css";
-import App from "./App.tsx";
-import Todo from "./Todos/todo.tsx";
-import Login from "./Pages/login.tsx";
-import Register from "./Pages/register.tsx";
-import Home from "./Pages/home.tsx";
-import ProtectedRoute from "./Routes/protectedRoute.tsx";
-import PublicRoute from "./Routes/publicRoute.tsx";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
+import App from "./app/App";
+import Todo from "./pages/Todo";
+import { editTodoLoader } from "./todo/components/editTodoLoader";
+import EditTodoModal from "./todo/components/EditTodoModal";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ProtectedRoute from "./routes/ProtectedRoute";
+import PublicRoute from "./routes/PublicRoute";
+import AuthLayout from "./app/AuthLayout";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    children: [
+      { index: true, element: <Home /> },
+      {
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "todo",
+            element: <Todo />,
+            children: [
+              {
+                path: ":todoId/edit",
+                element: <EditTodoModal />,
+                loader: editTodoLoader,
+                hydrateFallbackElement: <p>Loading app...</p>
+              },
+
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    element: <AuthLayout />,
+    children: [
+      {
+        element: <PublicRoute />,
+        children: [
+          { path: "/login", element: <Login /> },
+          { path: "/register", element: <Register /> },
+        ],
+      },
+    ],
+  },
+]);
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<App />}>
-          <Route index element={<Home />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path="/todo" element={<Todo />} />
-          </Route>
-          <Route element={<PublicRoute />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
-
-  </StrictMode>,
+    <RouterProvider router={router} />
+  </StrictMode>
 );
