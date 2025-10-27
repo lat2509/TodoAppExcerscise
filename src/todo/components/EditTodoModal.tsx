@@ -1,21 +1,19 @@
-import { useRef, useEffect, useState } from "react";
-import { useTodoStore } from "../../stores/useTodoStore";
-import { useNavigate, useParams, useBlocker, useLoaderData } from "react-router-dom";
-import type { TodoApi } from "../types";
-import { TiDeleteOutline } from "react-icons/ti";
-const EditTodoModal = () => {
-  const { todoId } = useParams();
+import { useRef, useEffect, useState } from 'react';
+import { useTodoStore } from '../../stores/useTodoStore';
+import { useNavigate, useBlocker, useLoaderData } from 'react-router-dom';
+import type { TodoApi } from '../../type/todo';
+import { TiDeleteOutline } from 'react-icons/ti';
 
+const EditTodoModal = () => {
   const navigator = useNavigate();
 
   const updateTodoText = useTodoStore(state => state.updateTodoText);
 
   const todo = useLoaderData() as TodoApi;
 
-  const [editText, setEditText] = useState(todo.todo);
+  const [editText, setEditText] = useState(todo.name);
 
   const [isDirty, setIsDirty] = useState(false);
-
 
   const blocker = useBlocker(isDirty);
 
@@ -25,37 +23,37 @@ const EditTodoModal = () => {
     const dialog = dialogRef.current;
     if (dialog && !dialog.open) {
       dialog.showModal();
-    };
-  }, [])
+    }
+  }, []);
 
   useEffect(() => {
     const blockerDialog = blockerRef.current;
     if (!blockerDialog) return;
-    if (blocker.state === "blocked" && !blockerDialog.open) {
+    if (blocker.state === 'blocked' && !blockerDialog.open) {
       blockerDialog.showModal();
     }
 
     if (blocker.state === 'unblocked' && blockerDialog.open) {
       blockerDialog.close();
     }
-  }, [blocker.state])
+  }, [blocker.state]);
 
   const handleBlockerProcess = () => {
     blockerRef.current?.close();
     blocker.proceed?.();
-  }
+  };
 
   const handleBlockerReset = () => {
     blockerRef.current?.close();
     blocker.reset?.();
-  }
+  };
   const handleOnOffModel = () => {
-    navigator("/todo");
-  }
+    navigator('/todo');
+  };
 
   const handleSave = async () => {
     if (!editText.trim()) {
-      setEditText(todo.todo);
+      setEditText(todo.name);
       return;
     }
     setIsDirty(false);
@@ -63,7 +61,7 @@ const EditTodoModal = () => {
       await updateTodoText(todo.id, editText);
       handleOnOffModel();
     } catch (error) {
-      console.error("Failed to update", error);
+      console.error('Failed to update', error);
     }
   };
 
@@ -76,32 +74,34 @@ const EditTodoModal = () => {
             handleOnOffModel();
           }
         }}
-        className="p-6 bg-white rounded-lg shadow-xl w-full max-w-sm backdrop:bg-black/50 m-auto"
+        className="m-auto w-full max-w-sm rounded-lg bg-white p-6 shadow-xl backdrop:bg-black/50"
       >
         <div className="flex justify-between">
           <p className="p-3 text-2xl">Update Todo</p>
           <button
-            onClick={() => { handleOnOffModel() }}
+            onClick={() => {
+              handleOnOffModel();
+            }}
             className="hover:text-red-600"
           >
-            <TiDeleteOutline className="text-2xl mr-3" />
+            <TiDeleteOutline className="mr-3 text-2xl" />
           </button>
         </div>
 
-        <div className="flex flex-col w-full p-2 justify-center">
+        <div className="flex w-full flex-col justify-center p-2">
           <input
             id={editText}
             type="text"
             value={editText}
             onChange={e => {
               setEditText(e.target.value);
-              setIsDirty(todo.todo !== editText);
+              setIsDirty(todo.name !== editText);
             }}
             autoFocus
             onKeyDown={e => e.stopPropagation()}
-            className="border-black border rounded-full py-2 px-3 mb-2"
+            className="mb-2 rounded-full border border-black px-3 py-2"
           />
-          <div className="flex justify-around w-full">
+          <div className="flex w-full justify-around">
             <button
               onPointerDown={e => {
                 e.stopPropagation();
@@ -109,7 +109,7 @@ const EditTodoModal = () => {
               onClick={() => {
                 handleSave();
               }}
-              className="border rounded-full py-2 px-4 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200 !mt-2"
+              className="!mt-2 rounded-full border bg-cyan-400 px-4 py-2 text-white transition-colors duration-200 hover:bg-cyan-600"
             >
               save
             </button>
@@ -118,9 +118,9 @@ const EditTodoModal = () => {
                 e.stopPropagation();
               }}
               onClick={() => {
-                handleOnOffModel()
+                handleOnOffModel();
               }}
-              className="border border-gray-300 rounded-full p-2 bg-gray-300 text-black hover:bg-gray-400 transition-colors duration-200 !mt-2"
+              className="!mt-2 rounded-full border border-gray-300 bg-gray-300 p-2 text-black transition-colors duration-200 hover:bg-gray-400"
             >
               cancel
             </button>
@@ -130,26 +130,28 @@ const EditTodoModal = () => {
       <dialog
         ref={blockerRef}
         onCancel={handleBlockerReset}
-        className="p-6 bg-white rounded-lg shadow-xl w-full max-w-sm backdrop:bg-black/50 m-auto"
+        className="m-auto w-full max-w-sm rounded-lg bg-white p-6 shadow-xl backdrop:bg-black/50"
       >
-        <p>Bạn có chắc chắn muốn rời đi?</p>
-        <div className="flex justify-end gap-4 mt-4">
+        <p>You have unchanged saved. Do you want to leave?</p>
+        <div className="mt-4 flex justify-end gap-4">
           <button
             onClick={() => handleBlockerProcess()}
-            className="border rounded-full py-2 px-4 bg-red-500 text-white"
+            className="rounded-full border bg-red-500 px-4 py-2 text-white"
           >
             Leave
           </button>
           <button
-            onClick={() => { handleBlockerReset() }}
-            className="border border-gray-300 rounded-full p-2 bg-gray-300"
+            onClick={() => {
+              handleBlockerReset();
+            }}
+            className="rounded-full border border-gray-300 bg-gray-300 p-2"
           >
             Cancel
           </button>
         </div>
       </dialog>
     </>
-  )
-}
+  );
+};
 
-export default EditTodoModal
+export default EditTodoModal;

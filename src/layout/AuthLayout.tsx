@@ -1,10 +1,10 @@
 import 'normalize.css';
 import { Outlet } from 'react-router-dom';
-import './App.css';
+import '../App.css';
 
 function AuthLayout() {
   return (
-    <div className="flex items-center justify-center absolute h-full w-full bg-[url('/todo-bg.jpg')] bg-cover bg-no-repeat">
+    <div className="absolute flex h-full w-full items-center justify-center bg-[url('/todo-bg.jpg')] bg-cover bg-no-repeat">
       <Outlet />
     </div>
   );

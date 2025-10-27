@@ -1,7 +1,8 @@
 import 'normalize.css';
 import { Outlet, useLocation } from 'react-router-dom';
 import './App.css';
-import Header from '../header/Header';
+import Header from './layout/Header';
+import { ToastContainer } from 'react-toastify';
 
 function App() {
   const location = useLocation();
@@ -14,9 +15,10 @@ function App() {
           <Header />
         </div>
       )}
-      <div className="flex items-center justify-center absolute h-full w-full bg-[url('/todo-bg.jpg')] bg-cover bg-no-repeat">
+      <div className="absolute flex h-full w-full items-center justify-center bg-[url('/todo-bg.jpg')] bg-cover bg-no-repeat">
         <Outlet />
       </div>
+      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
     </div>
   );
 }

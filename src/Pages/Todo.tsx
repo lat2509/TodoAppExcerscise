@@ -34,16 +34,16 @@ const TodoPages = () => {
       setActiveId(null);
       return;
     }
-    updateTodoStatus(Number(active.id), over.id as string);
+    updateTodoStatus(String(active.id), over.id as string);
     setActiveId(null);
   };
 
   const activeTodo = activeId
-    ? todos.find(todo => todo.id === Number(activeId))
+    ? todos.find(todo => todo.id === activeId)
     : null;
 
   return (
-    <div className="flex flex-row justify-around w-full overflow-hidden max-h-screen">
+    <div className="flex max-h-screen w-full flex-row justify-around overflow-hidden">
       <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <Task />
         <DragOverlay>

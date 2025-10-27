@@ -5,27 +5,14 @@ import { Link, useNavigate } from 'react-router-dom';
 import { MdMailOutline, MdLockOutline } from 'react-icons/md';
 import { IoEyeSharp } from 'react-icons/io5';
 import { FaEyeSlash } from 'react-icons/fa';
-import useAuthStore from '../stores/useAuthStore';
+import useAuthStore from '../../stores/useAuthStore';
 import { useState } from 'react';
-import axios from 'axios';
-import axiosClient from '../axios-config/axiosClient';
+import { loginApi } from '../../api/authApi';
 
 const schema = z.object({
   username: z.string().min(1, 'username is required'),
   password: z.string().min(8, 'Password must be at least 8 characters long'),
 });
-
-interface LoginRespone {
-  id: number;
-  username: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  gender: string;
-  image: string;
-  accessToken: string;
-  refreshToken: string;
-}
 
 type FormFields = z.infer<typeof schema>;
 
@@ -43,22 +30,23 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const onSubmit: SubmitHandler<FormFields> = async data => {
     try {
-      const response = await axiosClient.post<LoginRespone>(
-        '/auth/login',
-        data,
-      );
-      const { accessToken, refreshToken, ...userData } = response.data;
-      useAuthStore.getState().login(userData, accessToken, refreshToken);
+      const response = await loginApi(data.username, data.password)
+      const { accessToken, refreshToken, user } = response.data.data;
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+      useAuthStore.getState().login(user);
       navigate('/todo');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login failed:', error);
-      if (axios.isAxiosError(error) && error.response) {
+      console.log(error.response);
+
+      if (error.response?.status === 401) {
         setError('root', {
-          message: 'Email or password is wrong. Please try again. ',
+          message: 'Invalid username or password.',
         });
       } else {
         setError('root', {
-          message: 'Please try again',
+          message: 'An unexpected error occurred.',
         });
       }
     }
@@ -68,16 +56,16 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-[rgba(255,255,255,0.7)] rounded-md w-lg flex-col">
+    <div className="flex w-lg flex-col items-center justify-center rounded-md bg-[rgba(255,255,255,0.7)]">
       <div className="mt-4 p-4 text-3xl">
         <p>Login</p>
       </div>
       <form
         action=""
-        className="flex flex-col w-full h-full p-6 gap-5"
+        className="flex h-full w-full flex-col gap-5 p-6"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <label htmlFor="username" className="flex flex-col gap-2 relative">
+        <label htmlFor="username" className="relative flex flex-col gap-2">
           UserName
           <MdMailOutline className="absolute top-9 left-3.5" />
           <input
@@ -86,13 +74,11 @@ const Login = () => {
             type="text"
             placeholder="Input your username"
             autoComplete="username"
-            className="border-black border rounded-full p-2 pl-9"
+            className="rounded-full border border-black p-2 pl-9"
           />
-          {errors.username && (
-            <div className="text-red-500">{errors.username.message}</div>
-          )}
+          <div className="text-red-500 h-2">{errors.username?.message}</div>
         </label>
-        <label htmlFor="password" className="flex flex-col gap-2 relative">
+        <label htmlFor="password" className="relative flex flex-col gap-2">
           Password
           <MdLockOutline className="absolute top-9 left-3.5" />
           <input
@@ -100,7 +86,7 @@ const Login = () => {
             id="password"
             type={showPassword ? 'text' : 'password'}
             placeholder="Input your password"
-            className="border-black border rounded-full p-2 pl-9"
+            className="rounded-full border border-black p-2 pl-9"
           />
           <button
             type="button"
@@ -112,24 +98,20 @@ const Login = () => {
           >
             {showPassword ? <FaEyeSlash /> : <IoEyeSharp />}
           </button>
-          {errors.password && (
-            <div className="text-red-500">{errors.password.message}</div>
-          )}
+          <div className="text-red-500 h-2">{errors.password?.message}</div>
         </label>
         <button
           disabled={isSubmitting}
-          className="border rounded-full p-2 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200"
+          className="rounded-full border bg-cyan-400 p-2 text-white transition-colors duration-200 hover:bg-cyan-600"
         >
           {isSubmitting ? 'Loading...' : 'Login'}
         </button>
-        {errors.root && (
-          <div className="text-red-500">{errors.root.message}</div>
-        )}
+        <div className="text-red-500 h-3">{errors.root?.message}</div>
       </form>
-      <div className="p-3 mb-2">
+      <div className="mb-2 p-3">
         <p>
           {"If you don't have an account you"}
-          <Link to="/register" className="text-cyan-500 underline ml-1">
+          <Link to="/register" className="ml-1 text-cyan-500 underline">
             can sign up now
           </Link>
         </p>

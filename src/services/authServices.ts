@@ -1,23 +1,19 @@
-import axiosClient from '../axios-config/axiosClient';
+import { registerApi } from "../api/authApi";
 
 interface NewUser {
   username: string;
-  email: string;
   password: string;
-  firstName: string;
-  lastName: string;
+  confirmPassword: string,
 }
 
-const registerApi = async (userData: NewUser) => {
+const signUpUserApi = async (userData: NewUser) => {
   const apiData: NewUser = {
     username: userData.username,
-    email: userData.email,
     password: userData.password,
-    firstName: userData.username,
-    lastName: 'user',
+    confirmPassword: userData.confirmPassword,
   };
 
-  return await axiosClient.post('/users/add', apiData);
+  return await registerApi(apiData);
 };
 
-export default registerApi;
+export default signUpUserApi;

@@ -2,16 +2,15 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
-import { MdMailOutline, MdLockOutline } from 'react-icons/md';
+import { MdLockOutline } from 'react-icons/md';
 import { FaRegUser, FaEyeSlash } from 'react-icons/fa';
 import { IoEyeSharp } from 'react-icons/io5';
 import { useState } from 'react';
-import registerApi from '../services/authServices';
+import registerApi from '../../services/authServices';
 
 const schema = z
   .object({
     userName: z.string().min(1, 'UserName is required'),
-    email: z.string().min(1, 'Email is required').email('Email is invalid'),
     password: z
       .string()
       .min(8, 'Password must be at least 8 characters long')
@@ -50,18 +49,18 @@ const Register = () => {
     try {
       const userToRegister = {
         username: data.userName,
-        email: data.email,
         password: data.password,
-        firstName: data.userName,
-        lastName: 'user',
+        confirmPassword: data.confirmPassword,
       };
       await registerApi(userToRegister);
       navigate('/login');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration failed:', error);
-      setError('root', {
-        message: 'This email already exists',
-      });
+      if (error.response?.status === 409) {
+        setError('root', {
+          message: "Username already exists",
+        });
+      }
     }
   };
 
@@ -74,16 +73,16 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-[rgba(255,255,255,0.7)] rounded-md w-lg flex-col">
+    <div className="flex w-lg flex-col items-center justify-center rounded-md bg-[rgba(255,255,255,0.7)]">
       <div className="mt-4 p-4 text-3xl">
         <p>Sign Up</p>
       </div>
       <form
         action=""
-        className="flex flex-col w-full h-full p-6 gap-5"
+        className="flex h-full w-full flex-col gap-5 p-6"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <label htmlFor="userName" className="flex flex-col gap-2 relative">
+        <label htmlFor="userName" className="relative flex flex-col gap-2">
           UserName
           <FaRegUser className="absolute top-9 left-3.5" />
           <input
@@ -91,27 +90,11 @@ const Register = () => {
             id="userName"
             type="text"
             placeholder="Input your user name"
-            className="border-black border rounded-full p-2 pl-9"
+            className="rounded-full border border-black p-2 pl-9"
           />
-          {errors.userName && (
-            <div className="text-red-500">{errors.userName.message}</div>
-          )}
+          <div className="text-red-500 h-2">{errors.userName?.message}</div>
         </label>
-        <label htmlFor="email" className="flex flex-col gap-2 relative">
-          Email
-          <MdMailOutline className="absolute top-9 left-3.5" />
-          <input
-            {...register('email')}
-            id="email"
-            type="text"
-            placeholder="Input your email"
-            className="border-black border rounded-full p-2 pl-9"
-          />
-          {errors.email && (
-            <div className="text-red-500">{errors.email.message}</div>
-          )}
-        </label>
-        <label htmlFor="password" className="flex flex-col gap-2 relative">
+        <label htmlFor="password" className="relative flex flex-col gap-2">
           Password
           <MdLockOutline className="absolute top-9 left-3.5" />
           <input
@@ -119,7 +102,7 @@ const Register = () => {
             id="password"
             type={showPassword ? 'text' : 'password'}
             placeholder="Input your password"
-            className="border-black border rounded-full p-2 pl-9"
+            className="rounded-full border border-black p-2 pl-9"
           />
           <button
             type="button"
@@ -131,11 +114,9 @@ const Register = () => {
           >
             {showPassword ? <FaEyeSlash /> : <IoEyeSharp />}
           </button>
-          {errors.password && (
-            <div className="text-red-500">{errors.password.message}</div>
-          )}
+          <div className="text-red-500 h-2">{errors.password?.message}</div>
         </label>
-        <label htmlFor="password" className="flex flex-col gap-2 relative">
+        <label htmlFor="password" className="relative flex flex-col gap-2">
           Confirm Password
           <MdLockOutline className="absolute top-9 left-3.5" />
           <input
@@ -143,7 +124,7 @@ const Register = () => {
             id="confirmPassword"
             type={showConfirmPassword ? 'text' : 'password'}
             placeholder="Input your password again"
-            className="border-black border rounded-full p-2 pl-9"
+            className="rounded-full border border-black p-2 pl-9"
           />
           <button
             type="button"
@@ -154,22 +135,21 @@ const Register = () => {
           >
             {showConfirmPassword ? <FaEyeSlash /> : <IoEyeSharp />}
           </button>
-          {errors.confirmPassword && (
-            <div className="text-red-500">{errors.confirmPassword.message}</div>
-          )}
+          <div className="text-red-500 h-2">{errors.confirmPassword?.message}</div>
         </label>
         <button
           type="submit"
           disabled={isSubmitting}
-          className="border rounded-full mt-4 p-2 bg-cyan-400 text-white hover:bg-cyan-600 transition-colors duration-200"
+          className="mt-4 rounded-full border bg-cyan-400 p-2 text-white transition-colors duration-200 hover:bg-cyan-600"
         >
           {isSubmitting ? 'Loading...' : 'Sign Up'}
         </button>
+        <div className="text-red-500 h-3">{errors.root?.message}</div>
       </form>
-      <div className="p-3 mb-2">
+      <div className="mb-2 p-3">
         <p>
           If you have an account you
-          <Link to="/login" className="text-cyan-500 underline ml-1">
+          <Link to="/login" className="ml-1 text-cyan-500 underline">
             can login now
           </Link>
         </p>

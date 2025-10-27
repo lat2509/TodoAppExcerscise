@@ -1,21 +1,22 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { StrictMode } from 'react';
+import { createRoot } from 'react-dom/client';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 
-import App from "./app/App";
-import Todo from "./pages/Todo";
-import { editTodoLoader } from "./todo/components/editTodoLoader";
-import EditTodoModal from "./todo/components/EditTodoModal";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import ProtectedRoute from "./routes/ProtectedRoute";
-import PublicRoute from "./routes/PublicRoute";
-import AuthLayout from "./app/AuthLayout";
+import App from './App';
+import Todo from './pages/Todo';
+import { editTodoLoader } from './services/editTodoLoader';
+import EditTodoModal from './todo/components/EditTodoModal';
+import Home from './pages/Home';
+import Login from './layout/auth/Login';
+import Register from './layout/auth/Register';
+import ProtectedRoute from './routes/ProtectedRoute';
+import PublicRoute from './routes/PublicRoute';
+import AuthLayout from './layout/AuthLayout';
+import AddNewTodoModal from './todo/components/AddNewTodoModal';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <App />,
     children: [
       { index: true, element: <Home /> },
@@ -23,16 +24,19 @@ const router = createBrowserRouter([
         element: <ProtectedRoute />,
         children: [
           {
-            path: "todo",
+            path: 'todo',
             element: <Todo />,
             children: [
               {
-                path: ":todoId/edit",
+                path: ':todoId/edit',
                 element: <EditTodoModal />,
                 loader: editTodoLoader,
-                hydrateFallbackElement: <p>Loading app...</p>
+                hydrateFallbackElement: <p>Loading app...</p>,
               },
-
+              {
+                path: "addNewTodo",
+                element: <AddNewTodoModal />,
+              },
             ],
           },
         ],
@@ -45,16 +49,16 @@ const router = createBrowserRouter([
       {
         element: <PublicRoute />,
         children: [
-          { path: "/login", element: <Login /> },
-          { path: "/register", element: <Register /> },
+          { path: '/login', element: <Login /> },
+          { path: '/register', element: <Register /> },
         ],
       },
     ],
   },
 ]);
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <RouterProvider router={router} />
-  </StrictMode>
+  </StrictMode>,
 );

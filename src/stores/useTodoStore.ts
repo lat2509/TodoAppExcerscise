@@ -1,31 +1,19 @@
 import { create } from 'zustand';
-import type { TodoApi, TodoState } from '../todo/types';
-import axiosClient from '../axios-config/axiosClient';
+import type { TodoApi, TodoState } from '../type/todo';
+import axiosClient from '../api/axiosInterceptors';
+import { todoListApi } from '../api/todoApi';
 
 export const useTodoStore = create<TodoState>((set, get) => ({
   todos: [],
-  showInput: null,
-  showEdit: null,
   fetchTodo: async () => {
     try {
-      const res = await axiosClient.get<{ todos: TodoApi[] }>('/todos/user/1');
-      const todoFromApi = res.data.todos;
-      const tranformTodo = todoFromApi.map(todoApi => ({
-        ...todoApi,
-        status: todoApi.completed ? 'Done' : 'Todo',
-      }));
-      set({ todos: tranformTodo });
+      const res = await todoListApi();
+      const todoFromApi = res.data.data.todos;
+      set({ todos: todoFromApi });
     } catch (error) {
-      console.log('error', error);
+      console.error('error', error);
     }
   },
-
-  handleShowInput: col =>
-    set(state => ({
-      showInput: state.showInput === col ? null : col,
-    })),
-
-  handleHideInput: () => set({ showInput: null }),
 
   handleAddTodo: async (text, col) => {
     try {
