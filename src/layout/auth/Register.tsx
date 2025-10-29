@@ -7,6 +7,7 @@ import { FaRegUser, FaEyeSlash } from 'react-icons/fa';
 import { IoEyeSharp } from 'react-icons/io5';
 import { useState } from 'react';
 import registerApi from '../../services/authServices';
+import axios from 'axios';
 
 const schema = z
   .object({
@@ -54,12 +55,14 @@ const Register = () => {
       };
       await registerApi(userToRegister);
       navigate('/login');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Registration failed:', error);
-      if (error.response?.status === 409) {
-        setError('root', {
-          message: "Username already exists",
-        });
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 409) {
+          setError('root', {
+            message: 'Username already exists',
+          });
+        }
       }
     }
   };
@@ -92,7 +95,7 @@ const Register = () => {
             placeholder="Input your user name"
             className="rounded-full border border-black p-2 pl-9"
           />
-          <div className="text-red-500 h-2">{errors.userName?.message}</div>
+          <div className="h-2 text-red-500">{errors.userName?.message}</div>
         </label>
         <label htmlFor="password" className="relative flex flex-col gap-2">
           Password
@@ -114,7 +117,7 @@ const Register = () => {
           >
             {showPassword ? <FaEyeSlash /> : <IoEyeSharp />}
           </button>
-          <div className="text-red-500 h-2">{errors.password?.message}</div>
+          <div className="h-2 text-red-500">{errors.password?.message}</div>
         </label>
         <label htmlFor="password" className="relative flex flex-col gap-2">
           Confirm Password
@@ -135,7 +138,9 @@ const Register = () => {
           >
             {showConfirmPassword ? <FaEyeSlash /> : <IoEyeSharp />}
           </button>
-          <div className="text-red-500 h-2">{errors.confirmPassword?.message}</div>
+          <div className="h-2 text-red-500">
+            {errors.confirmPassword?.message}
+          </div>
         </label>
         <button
           type="submit"
@@ -144,7 +149,7 @@ const Register = () => {
         >
           {isSubmitting ? 'Loading...' : 'Sign Up'}
         </button>
-        <div className="text-red-500 h-3">{errors.root?.message}</div>
+        <div className="h-3 text-red-500">{errors.root?.message}</div>
       </form>
       <div className="mb-2 p-3">
         <p>

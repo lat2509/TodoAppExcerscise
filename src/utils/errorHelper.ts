@@ -1,39 +1,39 @@
-import { toast } from "react-toastify";
+import { toast } from 'react-toastify';
 
 interface Data {
-  success: boolean,
-  message: string,
-  data: any,
-  error: string,
+  success: boolean;
+  message: string;
+  data: object;
+  error: string;
 }
 export const handleApiError = (status: number, data: Data) => {
-  const message = data.message ?? "Đã xảy ra lỗi!";
+  const message = data.message ?? 'Đã xảy ra lỗi!';
   const error = data.error;
 
   switch (status) {
     case 400:
-      toast.error(message || "Dữ liệu không hợp lệ!");
-      console.error("Bad Request:", error);
+      toast.error(message || 'Dữ liệu không hợp lệ!');
+      console.error('Bad Request:', error);
       break;
 
     case 401:
-      toast.error(message || "Bạn chưa đăng nhập hoặc token hết hạn!");
-      console.warn("Unauthorized:", error);
+      toast.error(message || 'Bạn chưa đăng nhập hoặc token hết hạn!');
+      console.warn('Unauthorized:', error);
       break;
 
     case 403:
-      toast.warning(message || "Bạn không có quyền truy cập!");
-      console.warn("Forbidden:", error);
+      toast.warning(message || 'Bạn không có quyền truy cập!');
+      console.warn('Forbidden:', error);
       break;
 
     case 404:
-      toast.error(message || "Không tìm thấy tài nguyên!");
-      console.error("Not Found:", error);
+      toast.error(message || 'Không tìm thấy tài nguyên!');
+      console.error('Not Found:', error);
       break;
 
     case 500:
-      toast.error(message || "Lỗi máy chủ!");
-      console.error("Server Error:", error);
+      toast.error(message || 'Lỗi máy chủ!');
+      console.error('Server Error:', error);
       break;
 
     default:

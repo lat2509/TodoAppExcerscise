@@ -8,6 +8,7 @@ import { FaEyeSlash } from 'react-icons/fa';
 import useAuthStore from '../../stores/useAuthStore';
 import { useState } from 'react';
 import { loginApi } from '../../api/authApi';
+import axios from 'axios';
 
 const schema = z.object({
   username: z.string().min(1, 'username is required'),
@@ -30,24 +31,24 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const onSubmit: SubmitHandler<FormFields> = async data => {
     try {
-      const response = await loginApi(data.username, data.password)
+      const response = await loginApi(data.username, data.password);
       const { accessToken, refreshToken, user } = response.data.data;
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       useAuthStore.getState().login(user);
       navigate('/todo');
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login failed:', error);
-      console.log(error.response);
-
-      if (error.response?.status === 401) {
-        setError('root', {
-          message: 'Invalid username or password.',
-        });
-      } else {
-        setError('root', {
-          message: 'An unexpected error occurred.',
-        });
+      if (axios.isAxiosError(error)) {
+        if (error.response?.status === 401) {
+          setError('root', {
+            message: 'Invalid username or password.',
+          });
+        } else {
+          setError('root', {
+            message: 'An unexpected error occurred.',
+          });
+        }
       }
     }
   };
@@ -76,7 +77,7 @@ const Login = () => {
             autoComplete="username"
             className="rounded-full border border-black p-2 pl-9"
           />
-          <div className="text-red-500 h-2">{errors.username?.message}</div>
+          <div className="h-2 text-red-500">{errors.username?.message}</div>
         </label>
         <label htmlFor="password" className="relative flex flex-col gap-2">
           Password
@@ -98,7 +99,7 @@ const Login = () => {
           >
             {showPassword ? <FaEyeSlash /> : <IoEyeSharp />}
           </button>
-          <div className="text-red-500 h-2">{errors.password?.message}</div>
+          <div className="h-2 text-red-500">{errors.password?.message}</div>
         </label>
         <button
           disabled={isSubmitting}
@@ -106,7 +107,7 @@ const Login = () => {
         >
           {isSubmitting ? 'Loading...' : 'Login'}
         </button>
-        <div className="text-red-500 h-3">{errors.root?.message}</div>
+        <div className="h-3 text-red-500">{errors.root?.message}</div>
       </form>
       <div className="mb-2 p-3">
         <p>

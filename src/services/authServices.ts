@@ -1,9 +1,9 @@
-import { registerApi } from "../api/authApi";
+import { registerApi } from '../api/authApi';
 
 interface NewUser {
   username: string;
   password: string;
-  confirmPassword: string,
+  confirmPassword: string;
 }
 
 const signUpUserApi = async (userData: NewUser) => {

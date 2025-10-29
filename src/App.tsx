@@ -18,7 +18,18 @@ function App() {
       <div className="absolute flex h-full w-full items-center justify-center bg-[url('/todo-bg.jpg')] bg-cover bg-no-repeat">
         <Outlet />
       </div>
-      <ToastContainer position="top-right" autoClose={3000} theme="colored" />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

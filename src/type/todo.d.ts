@@ -12,6 +12,15 @@ export interface TodoApi {
   createdById: string;
 }
 
+export interface NewTodo {
+  name: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  assignee: string;
+  priority: string;
+  status: string;
+}
 export interface Column {
   id: string;
   title: string;
@@ -27,9 +36,15 @@ export interface DragTodoProps {
 
 export interface TodoState {
   todos: TodoApi[];
-  handleAddTodo: (text: string, col: string) => void;
-  handleDeleteTodo: (id: string) => void;
-  updateTodoStatus: (id: string, status: string) => void;
-  updateTodoText: (id: string, text: string) => Promise<void>;
+  handleAddTodo: (dataPost: NewTodo) => Promise<void>;
+  handleDeleteTodo: (id: string) => Promise<void>;
+  updateTodoStatus: (id: string, status: string) => Promise<void>;
+  updateTodo: (id: string, data: NewTodo) => Promise<void>;
   fetchTodo: () => void;
+}
+
+export interface TodoFormModalProps {
+  initialData?: TodoApi;
+  onSubmitApi: (data: NewTodo) => Promise<void>;
+  onSuccess: () => void;
 }

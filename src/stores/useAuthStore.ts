@@ -7,10 +7,10 @@ interface AuthState {
 }
 
 interface User {
-  id: string,
-  username: string,
-  createdAt: Date,
-  updatedAt: Date,
+  id: string;
+  username: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 const useAuthStore = create(
@@ -23,8 +23,8 @@ const useAuthStore = create(
         });
       },
       logout: () => {
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("refreshToken");
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
         set({ user: null });
       },
     }),

@@ -1,7 +1,12 @@
 import { create } from 'zustand';
 import type { TodoApi, TodoState } from '../type/todo';
-import axiosClient from '../api/axiosInterceptors';
-import { todoListApi } from '../api/todoApi';
+import {
+  addNewTodoApi,
+  deleteTodoApi,
+  todoListApi,
+  updateTodoApi,
+  updateTodoStatusApi,
+} from '../api/todoApi';
 
 export const useTodoStore = create<TodoState>((set, get) => ({
   todos: [],
@@ -15,18 +20,11 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     }
   },
 
-  handleAddTodo: async (text, col) => {
+  handleAddTodo: async dataPost => {
     try {
-      const response = await axiosClient.post('/todos/add', {
-        todo: text,
-        completed: false,
-        userId: 1,
-      });
-      const savedTodo: TodoApi = {
-        ...response.data,
-        status: col.toLowerCase(),
-      };
-
+      const response = await addNewTodoApi(dataPost);
+      const savedTodo: TodoApi = response.data.data.todo;
+      console.log(savedTodo);
       set(state => ({
         todos: [...state.todos, savedTodo],
       }));
@@ -37,8 +35,8 @@ export const useTodoStore = create<TodoState>((set, get) => ({
 
   handleDeleteTodo: async id => {
     try {
-      const res = await axiosClient.delete(`/todos/${id}`);
-      console.log(res.data);
+      const res = await deleteTodoApi(id);
+      console.log(res.data.success);
       set(state => ({
         todos: state.todos.filter(t => t.id !== id),
       }));
@@ -47,24 +45,31 @@ export const useTodoStore = create<TodoState>((set, get) => ({
     }
   },
 
-  updateTodoStatus: (id, status) => {
-    const updated = get().todos.map(t => (t.id === id ? { ...t, status } : t));
-    localStorage.setItem('todos', JSON.stringify(updated));
-    set({ todos: updated });
+  updateTodoStatus: async (id, status) => {
+    const originTodo = get().todos;
+    const optimisticTodo = originTodo.map(t =>
+      t.id === id ? { ...t, status } : t,
+    );
+    set({ todos: optimisticTodo });
+    try {
+      const res = await updateTodoStatusApi(id, status);
+      console.log(res.data.data.todo);
+      const updateTodo = res.data.data.todo;
+      set(state => ({
+        todos: state.todos.map(t => (t.id === id ? updateTodo : t)),
+      }));
+    } catch (error) {
+      console.error('failed to update status', error);
+    }
   },
 
-  updateTodoText: async (id, newtext) => {
+  updateTodo: async (id, data) => {
     try {
-      const res = await axiosClient.put(`/todos/${id}`, {
-        todo: newtext,
-      });
+      const res = await updateTodoApi(id, data);
       console.log(res.data);
-
+      const updateTodo = res.data.data.todo;
       set(state => ({
-        todos: state.todos.map(t =>
-          t.id === id ? { ...t, todo: newtext } : t,
-        ),
-        showEdit: null,
+        todos: state.todos.map(t => (t.id === id ? updateTodo : t)),
       }));
     } catch (error) {
       console.error('failed to update', error);

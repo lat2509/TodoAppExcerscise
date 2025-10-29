@@ -1,35 +1,30 @@
-import axiosInstance from "./axiosInterceptors";
-
-interface NewTodo {
-  name: string,
-  description: string,
-  startDate: string,
-  endDate: string,
-  assignee: string,
-  priority: string,
-  status: string,
-}
+import axiosInstance from './axiosInterceptors';
+import type { NewTodo } from '../type/todo';
 
 export const addNewTodoApi = (data: NewTodo) => {
   return axiosInstance.post('/api/todos', data);
-}
+};
 
 export const todoListApi = () => {
-  return axiosInstance.get("/api/todos");
-}
+  return axiosInstance.get('/api/todos');
+};
 
 export const todoStatsApi = () => {
-  return axiosInstance.get("/api/todos/stats");
-}
+  return axiosInstance.get('/api/todos/stats');
+};
 
-export const todoIdListApi = (id: number) => {
+export const todoIdListApi = (id: string) => {
   return axiosInstance.get(`/api/todos/${id}`);
-}
+};
 
-export const updateTodoApi = (id: number, data: NewTodo) => {
+export const updateTodoApi = (id: string, data: NewTodo) => {
   return axiosInstance.put(`/api/todos/${id}`, data);
-}
+};
 
-export const deleteTodoApi = (id: number) => {
+export const updateTodoStatusApi = (id: string, status: string) => {
+  return axiosInstance.put(`/api/todos/${id}`, { status });
+};
+
+export const deleteTodoApi = (id: string) => {
   return axiosInstance.delete(`/api/todos/${id}`);
-}
+};

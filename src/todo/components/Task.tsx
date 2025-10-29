@@ -2,19 +2,19 @@ import Column from './Column';
 import { Outlet, useNavigate } from 'react-router-dom';
 
 const columns = [
-  { id: 'Todo', title: "Todo" },
-  { id: 'InProgress', title: "In Progress" },
-  { id: 'InReview', title: "In Review" },
-  { id: 'InDeployment', title: "Deploy" },
-  { id: 'InTesting', title: "In Testing" },
-  { id: 'Done', title: "Done" },
+  { id: 'Todo', title: 'Todo' },
+  { id: 'In_Progress', title: 'In Progress' },
+  { id: 'In_Review', title: 'In Review' },
+  { id: 'In_Deployment', title: 'Deploy' },
+  { id: 'In_Testing', title: 'In Testing' },
+  { id: 'Done', title: 'Done' },
 ];
 
 const Task = () => {
   const navigator = useNavigate();
 
   return (
-    <div className="flex-col justify-center gap-2 items-center flex w-full md:flex-row md:justify-around">
+    <div className="flex w-full flex-col items-center justify-center gap-2 md:flex-row md:justify-around">
       {columns.map(col => (
         <div
           key={col.id}
@@ -24,7 +24,7 @@ const Task = () => {
           <Column col={col} />
           <button
             onClick={() => {
-              navigator("addNewtodo");
+              navigator('addNewtodo');
             }}
             className="rounded-full border bg-cyan-400 p-2 text-white transition-colors duration-200 hover:bg-cyan-600"
           >

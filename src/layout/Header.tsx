@@ -11,7 +11,7 @@ const Header = () => {
 
   const handleToggle = () => {
     setOnToggle(prev => !prev);
-  }
+  };
   return (
     <div>
       <nav className="flex h-20 items-center justify-between bg-[#2c2c2c] p-4 text-lg text-white shadow-2xl">
@@ -60,17 +60,14 @@ const Header = () => {
           </div>
         </div>
         <div className="md:hidden">
-          <button
-            className='p-3'
-            onClick={handleToggle}
-          >
+          <button className="p-3" onClick={handleToggle}>
             <BsList />
           </button>
         </div>
       </nav>
 
       {onToggle && (
-        <div className="items-center gap-2 flex flex-col bg-[#2c2c2c] p-4 text-white shadow-2xl md:hidden">
+        <div className="flex flex-col items-center gap-2 bg-[#2c2c2c] p-4 text-white shadow-2xl md:hidden">
           <div className="flex flex-col p-2">
             <Link to="/" className="text-xl hover:text-blue-400">
               Home
@@ -82,7 +79,7 @@ const Header = () => {
           <div>
             {user ? (
               <div>
-                <p >Hello {user.username}</p>
+                <p>Hello {user.username}</p>
                 <button
                   onClick={logout}
                   className="rounded-4xl border px-4 py-1 hover:text-blue-400"
@@ -91,7 +88,7 @@ const Header = () => {
                 </button>
               </div>
             ) : (
-              <div className='flex flex-col gap-2'>
+              <div className="flex flex-col gap-2">
                 <Link
                   to="/login"
                   className="ml-4 rounded-4xl border px-4 py-1 hover:text-blue-400"

@@ -1,7 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
 import App from './App';
 import Todo from './pages/Todo';
 import { editTodoLoader } from './services/editTodoLoader';
@@ -13,19 +12,24 @@ import ProtectedRoute from './routes/ProtectedRoute';
 import PublicRoute from './routes/PublicRoute';
 import AuthLayout from './layout/AuthLayout';
 import AddNewTodoModal from './todo/components/AddNewTodoModal';
+import NotFoundPage from './layout/NotFoundPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     children: [
-      { index: true, element: <Home /> },
+      {
+        index: true,
+        element: <Home />,
+      },
       {
         element: <ProtectedRoute />,
         children: [
           {
             path: 'todo',
             element: <Todo />,
+            errorElement: <NotFoundPage />,
             children: [
               {
                 path: ':todoId/edit',
@@ -34,7 +38,7 @@ const router = createBrowserRouter([
                 hydrateFallbackElement: <p>Loading app...</p>,
               },
               {
-                path: "addNewTodo",
+                path: 'addNewTodo',
                 element: <AddNewTodoModal />,
               },
             ],
@@ -54,6 +58,10 @@ const router = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: '*',
+    element: <NotFoundPage />,
   },
 ]);
 
