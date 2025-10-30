@@ -1,4 +1,11 @@
-import { DndContext, type DragEndEvent } from '@dnd-kit/core';
+import {
+  DndContext,
+  type DragEndEvent,
+  PointerSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
 import Task from '../todo/components/Task';
 import { useTodoStore } from '../stores/useTodoStore';
 import { useEffect } from 'react';
@@ -8,6 +15,18 @@ const TodoPages = () => {
 
   const { fetchTodo } = useTodoStore();
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    }),
+  );
   useEffect(() => {
     fetchTodo();
   }, [fetchTodo]);
@@ -25,8 +44,8 @@ const TodoPages = () => {
   };
 
   return (
-    <div className="hide-scrollbar flex max-h-full w-full flex-row justify-around overflow-auto 2xl:overflow-hidden">
-      <DndContext onDragEnd={handleDragEnd}>
+    <div className="hide-scrollbar flex max-h-full w-full flex-row justify-around overflow-scroll 2xl:overflow-hidden">
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <Task />
       </DndContext>
     </div>

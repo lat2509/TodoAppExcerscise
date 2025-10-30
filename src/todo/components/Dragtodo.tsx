@@ -53,6 +53,7 @@ const DraggableTodo: React.FC<DragTodoProps> = ({ todo }) => {
     transform: transform
       ? `translate(${transform.x}px, ${transform.y}px)`
       : undefined,
+    touchAction: 'none',
   };
 
   return (
