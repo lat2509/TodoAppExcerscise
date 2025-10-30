@@ -69,19 +69,30 @@ const Header = () => {
       {onToggle && (
         <div className="flex flex-col items-center gap-2 bg-[#2c2c2c] p-4 text-white shadow-2xl md:hidden">
           <div className="flex flex-col p-2">
-            <Link to="/" className="text-xl hover:text-blue-400">
+            <Link
+              to="/"
+              onClick={handleToggle}
+              className="text-xl hover:text-blue-400"
+            >
               Home
             </Link>
-            <Link to="/todo" className="text-xl hover:text-blue-400">
+            <Link
+              to="/todo"
+              onClick={handleToggle}
+              className="text-xl hover:text-blue-400"
+            >
               Todo
             </Link>
           </div>
           <div>
             {user ? (
-              <div>
+              <div className="flex flex-row items-center gap-3">
                 <p>Hello {user.username}</p>
                 <button
-                  onClick={logout}
+                  onClick={() => {
+                    logout();
+                    handleToggle();
+                  }}
                   className="rounded-4xl border px-4 py-1 hover:text-blue-400"
                 >
                   Logout

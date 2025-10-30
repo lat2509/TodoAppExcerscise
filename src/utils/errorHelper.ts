@@ -17,7 +17,6 @@ export const handleApiError = (status: number, data: Data) => {
       break;
 
     case 401:
-      toast.error(message || 'Bạn chưa đăng nhập hoặc token hết hạn!');
       console.warn('Unauthorized:', error);
       break;
 

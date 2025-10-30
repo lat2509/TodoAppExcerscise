@@ -135,7 +135,7 @@ const TodoFormModal: React.FC<TodoFormModalProps> = ({
             handelOffModal();
           }
         }}
-        className="m-auto flex w-lg flex-col justify-center rounded-md bg-white shadow-xl backdrop:bg-black/50"
+        className="m-auto flex max-h-9/12 w-4/5 flex-col justify-center rounded-md bg-white shadow-xl backdrop:bg-black/50 md:w-lg 2xl:max-h-full"
       >
         <div className="flex w-full justify-end">
           <button
@@ -152,7 +152,7 @@ const TodoFormModal: React.FC<TodoFormModalProps> = ({
         </div>
         <form
           onSubmit={handleSubmit(internalOnSubmit)}
-          className="flex w-full flex-col gap-3 p-8"
+          className="flex w-full flex-col gap-3 overflow-y-auto p-8"
         >
           <label htmlFor="name" className="flex flex-col gap-2">
             Name

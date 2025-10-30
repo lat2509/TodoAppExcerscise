@@ -1,4 +1,5 @@
 import axios from 'axios';
+import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { refreshTokenApi } from './authApi';
 import { handleApiError } from '../utils/errorHelper';
 
@@ -17,38 +18,48 @@ axiosInstance.interceptors.request.use(
     }
     return request;
   },
-  error => {
-    return Promise.reject(error);
-  },
+  error => Promise.reject(error),
 );
+
+const refreshAuthLogic = async (failedRequest: any) => {
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) {
+    localStorage.removeItem('accessToken');
+    return Promise.reject(failedRequest);
+  }
+
+  try {
+    const res = await refreshTokenApi(refreshToken);
+
+    const { refreshToken: newRefreshToken, accessToken: newAccessToken } =
+      res.data.data;
+
+    localStorage.setItem('accessToken', newAccessToken);
+    localStorage.setItem('refreshToken', newRefreshToken);
+
+    failedRequest.response.config.headers['Authorization'] =
+      `Bearer ${newAccessToken}`;
+    return Promise.resolve();
+  } catch (err) {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    return Promise.reject(err);
+  }
+};
+
+createAuthRefreshInterceptor(axiosInstance, refreshAuthLogic, {
+  pauseInstanceWhileRefreshing: true, // chờ refresh xong mới gửi các request khác
+});
 
 axiosInstance.interceptors.response.use(
   response => response,
-  async error => {
-    const originalRequest = error.config;
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      const refreshToken = localStorage.getItem('refreshToken');
-      if (!refreshToken) return Promise.reject(error);
-      try {
-        const res = await refreshTokenApi(refreshToken);
-        const { refreshToken: newRefreshToken, accessToken: newAccessToken } =
-          res.data.data;
-        console.log(newAccessToken);
-        localStorage.setItem('accessToken', newAccessToken);
-        localStorage.setItem('refreshToken', newRefreshToken);
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return axiosInstance(originalRequest);
-      } catch (error) {
-        localStorage.removeItem('accessToken');
-        localStorage.removeItem('refreshToken');
-        return Promise.reject(error);
-      }
-    }
+  error => {
     if (error.response) {
       const { status, data } = error.response;
       handleApiError(status, data);
     }
+    return Promise.reject(error);
   },
 );
+
 export default axiosInstance;

@@ -57,7 +57,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex w-lg flex-col items-center justify-center rounded-md bg-[rgba(255,255,255,0.7)]">
+    <div className="flex w-5/6 flex-col items-center justify-center rounded-md bg-[rgba(255,255,255,0.7)] md:w-lg">
       <div className="mt-4 p-4 text-3xl">
         <p>Login</p>
       </div>

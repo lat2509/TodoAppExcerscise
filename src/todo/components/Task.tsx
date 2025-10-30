@@ -14,11 +14,11 @@ const Task = () => {
   const navigator = useNavigate();
 
   return (
-    <div className="flex w-full flex-col items-center justify-center gap-2 md:flex-row md:justify-around">
+    <div className="mt-24 flex w-full flex-col items-center justify-around gap-2 md:mt-20 md:flex-row">
       {columns.map(col => (
         <div
           key={col.id}
-          className="flex h-auto w-60 flex-col gap-3 rounded-lg border bg-[rgba(255,255,255,0.7)] p-2"
+          className="flex min-w-60 flex-col gap-3 rounded-lg border bg-[rgba(255,255,255,0.7)] p-2 md:h-auto"
         >
           <p className="font-semibold">{col.title}</p>
           <Column col={col} />

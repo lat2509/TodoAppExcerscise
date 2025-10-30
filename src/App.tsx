@@ -15,7 +15,7 @@ function App() {
           <Header />
         </div>
       )}
-      <div className="absolute flex h-full w-full items-center justify-center bg-[url('/todo-bg.jpg')] bg-cover bg-no-repeat">
+      <div className="absolute top-0 flex h-full w-full items-center justify-center bg-[url('/todo-bg.jpg')] bg-cover bg-no-repeat p-4">
         <Outlet />
       </div>
       <ToastContainer

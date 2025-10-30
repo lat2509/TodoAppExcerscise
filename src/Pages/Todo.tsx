@@ -25,7 +25,7 @@ const TodoPages = () => {
   };
 
   return (
-    <div className="flex max-h-screen w-full flex-row justify-around overflow-hidden">
+    <div className="hide-scrollbar flex max-h-full w-full flex-row justify-around overflow-auto 2xl:overflow-hidden">
       <DndContext onDragEnd={handleDragEnd}>
         <Task />
       </DndContext>

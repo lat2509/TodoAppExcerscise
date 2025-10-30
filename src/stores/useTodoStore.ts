@@ -13,6 +13,7 @@ export const useTodoStore = create<TodoState>((set, get) => ({
   fetchTodo: async () => {
     try {
       const res = await todoListApi();
+      console.log(res.data.data);
       const todoFromApi = res.data.data.todos;
       set({ todos: todoFromApi });
     } catch (error) {
