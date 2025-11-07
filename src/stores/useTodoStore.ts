@@ -1,79 +1,32 @@
-import { create } from 'zustand';
-import type { TodoApi, TodoState } from '../type/todo';
-import {
-  addNewTodoApi,
-  deleteTodoApi,
-  todoListApi,
-  updateTodoApi,
-  updateTodoStatusApi,
-} from '../api/todoApi';
+import { create } from "zustand";
+import type { SortConfigs, TaskProps, TodoStatus } from "../type/todo";
+import { persist } from "zustand/middleware";
 
-export const useTodoStore = create<TodoState>((set, get) => ({
-  todos: [],
-  fetchTodo: async () => {
-    try {
-      const res = await todoListApi();
-      console.log(res.data.data);
-      const todoFromApi = res.data.data.todos;
-      set({ todos: todoFromApi });
-    } catch (error) {
-      console.error('error', error);
-    }
-  },
+const defaultSortConfigs: Record<TodoStatus, SortConfigs> = {
+  TODO: { sortBy: "createdAt", sortOrder: "desc" },
+  IN_PROGRESS: { sortBy: "createdAt", sortOrder: "desc" },
+  IN_REVIEW: { sortBy: "createdAt", sortOrder: "desc" },
+  IN_DEPLOYMENT: { sortBy: "createdAt", sortOrder: "desc" },
+  IN_TESTING: { sortBy: "createdAt", sortOrder: "desc" },
+  DONE: { sortBy: "createdAt", sortOrder: "desc" },
+}
 
-  handleAddTodo: async dataPost => {
-    try {
-      const response = await addNewTodoApi(dataPost);
-      const savedTodo: TodoApi = response.data.data.todo;
-      console.log(savedTodo);
-      set(state => ({
-        todos: [...state.todos, savedTodo],
-      }));
-    } catch (error) {
-      console.error('Failed to add todo', error);
+const useTodoStore = create<TaskProps>()(
+  persist(
+    (set) => ({
+      sortConfigs: defaultSortConfigs,
+      onSortChange: (status, sortBy, sortOrder) =>
+        set((state) => ({
+          sortConfigs: {
+            ...state.sortConfigs,
+            [status]: { sortBy, sortOrder }
+          }
+        }))
+    }),
+    {
+      name: "TodoSort"
     }
-  },
+  )
+)
 
-  handleDeleteTodo: async id => {
-    try {
-      const res = await deleteTodoApi(id);
-      console.log(res.data.success);
-      set(state => ({
-        todos: state.todos.filter(t => t.id !== id),
-      }));
-    } catch (error) {
-      console.error('failed to delete', error);
-    }
-  },
-
-  updateTodoStatus: async (id, status) => {
-    const originTodo = get().todos;
-    const optimisticTodo = originTodo.map(t =>
-      t.id === id ? { ...t, status } : t,
-    );
-    set({ todos: optimisticTodo });
-    try {
-      const res = await updateTodoStatusApi(id, status);
-      console.log(res.data.data.todo);
-      const updateTodo = res.data.data.todo;
-      set(state => ({
-        todos: state.todos.map(t => (t.id === id ? updateTodo : t)),
-      }));
-    } catch (error) {
-      console.error('failed to update status', error);
-    }
-  },
-
-  updateTodo: async (id, data) => {
-    try {
-      const res = await updateTodoApi(id, data);
-      console.log(res.data);
-      const updateTodo = res.data.data.todo;
-      set(state => ({
-        todos: state.todos.map(t => (t.id === id ? updateTodo : t)),
-      }));
-    } catch (error) {
-      console.error('failed to update', error);
-    }
-  },
-}));
+export default useTodoStore;

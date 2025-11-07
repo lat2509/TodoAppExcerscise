@@ -4,7 +4,7 @@ import { refreshTokenApi } from './authApi';
 import { handleApiError } from '../utils/errorHelper';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: import.meta.env.VITE_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -20,7 +20,7 @@ axiosInstance.interceptors.request.use(
   },
   error => Promise.reject(error),
 );
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const refreshAuthLogic = async (failedRequest: any) => {
   const refreshToken = localStorage.getItem('refreshToken');
   if (!refreshToken) {

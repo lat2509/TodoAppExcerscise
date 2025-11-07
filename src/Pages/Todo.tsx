@@ -7,14 +7,27 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import Task from '../todo/components/Task';
-import { useTodoStore } from '../stores/useTodoStore';
-import { useEffect } from 'react';
+import { updateTodoStatusApi } from '../api/todoApi';
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useTodoStore from '../stores/useTodoStore';
 
 const TodoPages = () => {
-  const { updateTodoStatus } = useTodoStore();
+  const sortConfigs = useTodoStore(state => state.sortConfigs);
 
-  const { fetchTodo } = useTodoStore();
+  const onSortChange = useTodoStore(state => state.onSortChange)
 
+  const queryClient = useQueryClient();
+
+  const updateStatusMutation = useMutation({
+    mutationFn: (variables: { id: string, status: string }) => updateTodoStatusApi(variables.id, variables.status),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['todos'] })
+    }
+  })
+
+  const handleUpdateTodoStatus = async (id: string, status: string) => {
+    await updateStatusMutation.mutateAsync({ id, status });
+  }
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -27,9 +40,6 @@ const TodoPages = () => {
       },
     }),
   );
-  useEffect(() => {
-    fetchTodo();
-  }, [fetchTodo]);
 
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
@@ -40,13 +50,20 @@ const TodoPages = () => {
       return;
     }
     const overId = over.id as string;
-    updateTodoStatus(String(active.id), overId.toUpperCase());
+    handleUpdateTodoStatus(String(active.id), overId.toUpperCase());
   };
 
+  // const handleSortChange = (status: TodoStatus, sortBy: string, sortOrder: string) => {
+  //   setSortConfigs(prev => ({
+  //     ...prev,
+  //     [status]: { sortBy, sortOrder },
+  //   }))
+  // }
+
   return (
-    <div className="hide-scrollbar flex max-h-full w-full flex-row justify-around overflow-scroll 2xl:overflow-hidden">
+    <div className="hide-scrollbar flex max-h-full h-full w-full flex-row justify-around overflow-scroll 2xl:overflow-hidden 2xl:max-h-screen">
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-        <Task />
+        <Task sortConfigs={sortConfigs} onSortChange={onSortChange} />
       </DndContext>
     </div>
   );

@@ -22,29 +22,44 @@ export interface NewTodo {
   status: string;
 }
 export interface Column {
-  id: string;
-  title: string;
+  id: TodoStatus;
 }
 
-export interface ColumnProps {
-  col: Column;
+
+export interface ColumnComponentProps {
+  col: Column,
+  sortConfigs: SortConfigs,
 }
 
 export interface DragTodoProps {
   todo: TodoApi;
 }
 
-export interface TodoState {
-  todos: TodoApi[];
-  handleAddTodo: (dataPost: NewTodo) => Promise<void>;
-  handleDeleteTodo: (id: string) => Promise<void>;
-  updateTodoStatus: (id: string, status: string) => Promise<void>;
-  updateTodo: (id: string, data: NewTodo) => Promise<void>;
-  fetchTodo: () => void;
-}
-
 export interface TodoFormModalProps {
   initialData?: TodoApi;
   onSubmitApi: (data: NewTodo) => Promise<void>;
   onSuccess: () => void;
+}
+
+export interface TaskProps {
+  sortConfigs: Record<TodoStatus, SortConfigs>;
+  onSortChange: (status: TodoStatus, sortBy: string, sortOrder: string) => void;
+}
+
+export type TodoStatus =
+  | "TODO"
+  | "IN_PROGRESS"
+  | "IN_REVIEW"
+  | "IN_DEPLOYMENT"
+  | "IN_TESTING"
+  | "DONE";
+
+export interface ListActionComponentProp {
+  col: { id: TodoStatus },
+  onSortChange: (status: TodoStatus, sortBy: string, sortOrder: string) => void;
+}
+
+export interface SortConfigs {
+  sortBy: string
+  sortOrder: string
 }

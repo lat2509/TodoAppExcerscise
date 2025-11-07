@@ -28,3 +28,9 @@ export const updateTodoStatusApi = (id: string, status: string) => {
 export const deleteTodoApi = (id: string) => {
   return axiosInstance.delete(`/api/todos/${id}`);
 };
+
+export const sortTodoListByStatus = (status: string, sortBy: string, sortOrder: string) => {
+  return axiosInstance.get(`/api/todos`, {
+    params: { status, sortBy, sortOrder }
+  });
+}

@@ -23,6 +23,8 @@ export const registerApi = (data: RegisterUser) => {
 export const logoutAllApi = () => {
   return axiosInstance.post('/api/auth/logout-all');
 };
+
 export const authProfile = () => {
   return axiosInstance.get('/api/auth/profile');
 };
+

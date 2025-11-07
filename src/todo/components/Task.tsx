@@ -1,34 +1,38 @@
 import Column from './Column';
 import { Outlet, useNavigate } from 'react-router-dom';
+import { FiPlus } from "react-icons/fi";
+import { type TaskProps, type TodoStatus } from '../../type/todo';
+import ListAction from './ListAction';
 
-const columns = [
-  { id: 'Todo', title: 'Todo' },
-  { id: 'In_Progress', title: 'In Progress' },
-  { id: 'In_Review', title: 'In Review' },
-  { id: 'In_Deployment', title: 'Deploy' },
-  { id: 'In_Testing', title: 'In Testing' },
-  { id: 'Done', title: 'Done' },
+const columns: { id: TodoStatus }[] = [
+  { id: "TODO" },
+  { id: "IN_PROGRESS" },
+  { id: "IN_REVIEW" },
+  { id: "IN_DEPLOYMENT" },
+  { id: "IN_TESTING" },
+  { id: "DONE" },
 ];
 
-const Task = () => {
+const Task: React.FC<TaskProps> = ({ sortConfigs, onSortChange }) => {
   const navigator = useNavigate();
 
   return (
-    <div className="mt-24 flex w-full flex-col items-center justify-around gap-2 md:mt-20 md:flex-row">
+    <div className="mt-14 flex w-full flex-col items-center justify-around gap-2 md:flex-row md:items-start">
       {columns.map(col => (
         <div
           key={col.id}
-          className="flex min-w-60 flex-col gap-3 rounded-lg border bg-[rgba(255,255,255,0.7)] p-2 md:h-auto"
+          className="relative flex min-w-72 flex-col gap-3 shadow-md rounded-lg bg-[#f1f2f4] p-2 md:h-auto"
         >
-          <p className="font-semibold">{col.title}</p>
-          <Column col={col} />
+          <ListAction col={col} onSortChange={onSortChange} />
+          <Column col={col} sortConfigs={sortConfigs[col.id]} />
           <button
             onClick={() => {
               navigator('addNewtodo');
             }}
-            className="rounded-full border bg-cyan-400 p-2 text-white transition-colors duration-200 hover:bg-cyan-600"
+            className="p-2 flex gap-2 text-gray-600 hover:bg-gray-200 rounded-lg w-full"
           >
-            Add New
+            <FiPlus />
+            Add new todo
           </button>
         </div>
       ))}
