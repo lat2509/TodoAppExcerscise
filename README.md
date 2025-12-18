@@ -1,73 +1,78 @@
-# React + TypeScript + Vite
+# ✅ Advanced Task Manager (Todo App)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![React](https://img.shields.io/badge/React-19.0-61DAFB?logo=react&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?logo=typescript&logoColor=white)
+![Zustand](https://img.shields.io/badge/Zustand-State_Management-orange)
+![Dnd Kit](https://img.shields.io/badge/Dnd_Kit-Drag_&_Drop-black)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-38B2AC?logo=tailwindcss&logoColor=white)
 
-Currently, two official plugins are available:
+A high-performance Task Management application featuring Kanban-style Drag & Drop, complex state management, and strict form validation.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Key Features
 
-## React Compiler
+* **📋 Kanban Board:** Smooth **Drag & Drop** functionality to move tasks between statuses using `@dnd-kit`.
+* **🧠 Smart State Management:** Powered by **Zustand** with Persist Middleware to save user preferences and sort configurations locally.
+* **🛡️ Robust Form Validation:** Built with **React Hook Form** and **Zod** Schema to ensure data integrity and minimize re-renders.
+* **🔃 Advanced Sorting:** Client-side sorting logic (by Date, Status, Priority) configurable per column.
+* **🔒 Security:** Protected Routes requiring authentication to access the dashboard.
+* **🌗 UI/UX:** Clean interface with Tailwind CSS and Responsive Design.
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## 🛠 Tech Stack
 
-## Expanding the ESLint configuration
+### Core
+* **Framework:** React 19
+* **Language:** TypeScript
+* **Build Tool:** Vite
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### State & Logic
+* **State Management:** Zustand (Lightweight & Persist)
+* **Forms:** React Hook Form + Zod
+* **Drag & Drop:** @dnd-kit/core
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### UI & Styling
+* **Styling:** Tailwind CSS
+* **Icons:** React Icons
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Code Quality
+* **Linting:** ESLint + Prettier
+* **Git Hooks:** Husky + Commitlint
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🛠 Installation & Setup
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+1.  **Clone the repository**
+    ```bash
+    git clone [https://github.com/lat2509/TodoAppExcerscise.git](https://github.com/lat2509/TodoAppExcerscise.git)
+    cd TodoAppExcerscise
+    ```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+2.  **Install dependencies**
+    ```bash
+    yarn install
+    # or
+    npm install
+    ```
+
+3.  **Environment Variables**
+    Create a `.env` file for API configuration (if applicable):
+    ```env
+    VITE_API_URL=[http://your-api-endpoint.com](http://your-api-endpoint.com)
+    ```
+
+4.  **Run the development server**
+    ```bash
+    yarn dev
+    ```
+
+## 📂 Project Structure
+
+```bash
+src/
+├── api/            # API services & Axios Interceptors
+├── layout/         # Layout components (AuthLayout, Header...)
+├── stores/         # Zustand stores (useTodoStore, useAuthStore)
+├── todo/           # Todo feature components
+│   ├── components/ # DragTodo, Column, Task, Modals...
+├── Routes/         # Public & Protected route guards
+├── type/           # Type definitions
+└── utils/          # Error helpers

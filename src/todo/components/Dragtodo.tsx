@@ -109,7 +109,7 @@ const DraggableTodo: React.FC<DragTodoProps> = ({ todo }) => {
         <li className={"flex flex-col rounded-xl bg-white/90 p-3 shadow-sm border border-gray-100 hover:shadow-md hover:border-cyan-300 transition-all duration-200 cursor-pointer group"}>
           <div className='flex items-center justify-between'>
             <span className="overflow-hidden">{todo.name}</span>
-            <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="flex gap-1 lg:opacity-0 transition-opacity group-hover:opacity-100">
               <button
                 onPointerDown={e => {
                   e.stopPropagation();
